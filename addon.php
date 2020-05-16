@@ -12,6 +12,7 @@ add_filter('gutenberg_forms_integrations', function( $integrations ) {
     $api = new MailPoet(\MailPoet\API\API::MP('v1'));
         
     $lists = $api->get_lists();
+    $fields = $api->get_fields();
 
     $configurations = array(
         'title' => 'MailPoet',
@@ -25,20 +26,11 @@ add_filter('gutenberg_forms_integrations', function( $integrations ) {
             'list' => array(
                 'label' => 'Select List',
                 'value' => $lists,
-                'type'  => 'select'
+                'type'  => 'select',
+                'required'  => true
             )
         ),
-        'api_fields' => array(
-            'EMAIL' => array(
-                'label' => 'Email'
-            ),
-            'FNAME' => array(
-                'label' => 'First Name'
-            ),
-            'LNAME' => array(
-                'label' => 'Last Name'
-            ),
-        )
+        'api_fields' => $fields
     ); 
 
     $integrations['mailpoet'] = $configurations;

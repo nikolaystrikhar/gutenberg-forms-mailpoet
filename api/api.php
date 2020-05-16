@@ -24,6 +24,7 @@ class MailPoet {
             # getting the list
 
             $lists = $this->api->getLists();
+
             $options = []; # options that will be listed in the plugin form block
 
             # we just need ID & label -> reOrganize List
@@ -45,7 +46,7 @@ class MailPoet {
 
             return $options;
 
-        } catch (\Exception $e) {
+        } catch ( \Exception $e ) {
             
             return []; # on any exception currently returning empty list
 
@@ -55,75 +56,189 @@ class MailPoet {
         
     }
 
-    public function validate_entry( $entry ) {
+    public function validate_entry( $entry, $subscriber_fields  ) {
 
         # testing the entry before adding a subscriber...
 
-        if ( 
-            is_array( $entry ) and # checking if the $entry is an array
-            array_key_exists( 'list', $entry ) and  # checking if a list is selected 
-            !empty( $entry['list'] ) and  # checking if the selected list ID is not empty
-            array_key_exists('EMAIL', $entry) and # checking if the email exists
-            !empty($entry['EMAIL']) and # checking if the email is not empty
-            filter_var( $entry['EMAIL'], FILTER_VALIDATE_EMAIL ) # checking if the email is valid
-        ) {
+        foreach ( $subscriber_fields as $key => $subscriber_field ) {
 
-            return true;
+            # validations
+
+            if ($this->array_keys_exists(['name', 'type', 'params'], $subscriber_field)) {
+
+                $field_params = $subscriber_field['params'];
+
+                $field_required = array_key_exists('required', $field_params) ? $field_params['required'] : '0';
+
+                $field_requirement_parsed = empty($field_required) ? false : true;
+
+                $ID = $subscriber_field['id'];
+
+                if ( $ID !== 'checkbox' and $field_requirement_parsed === true and array_key_exists($ID, $entry) and empty($entry[$ID])) {
+
+                    // this means a required field is not filled
+                    return false;
+                    break;
+
+                } 
+
+
+            }
 
         }
 
-        return false;
+        return true;
 
     }
 
+    public function convert_checkbox( string $value ) {
 
+
+        $values = array(
+            'is_checked' => '1',
+            'value' => $value
+        );
+
+        return $values;
+
+    }
+ 
     public function add_subscriber( $entry ) {
-
-        $is_valid = $this->validate_entry( $entry );
-
-        if (!$is_valid) return; # stop executing the function if the entry is not valid
-
-        $subscriber = array(
-            'email' => $entry['EMAIL'],
-        );
-
-        # checking for the "first name" and "last name" manually because these are optional fields
-
-        if (array_key_exists('FNAME', $entry) and !empty($entry['FNAME'])) {
-
-            $subscriber['first_name'] = $entry['FNAME'];
-
-        }
-
-        if (array_key_exists('LNAME', $entry) and !empty($entry['LNAME'])) {
-
-            $subscriber['last_name'] = $entry['LNAME'];
-
-        }
-
-
-        $list_ids = array(
-            $entry['list']
-        );
 
 
         try {
+            $subscriber_fields =  $this->api->getSubscriberFields();
+            $is_valid = $this->validate_entry( $entry, $subscriber_fields );
+
+            if (!$is_valid) return; # stop executing the function if the entry is not valid
+
+            $subscriber = array();
+
+            foreach ($subscriber_fields as $key => $subscriber_field) {
+                
+                if ( $this->array_keys_exists(['name', 'type', 'params', 'id'] , $subscriber_field) ) {
+
+                    $ID = $subscriber_field['id'];
+                    $type = $subscriber_field['type'];
+
+                    if (!empty( $entry[ $ID ] ) and $type !== 'checkbox') {
+
+                        $subscriber[ $ID ] = $entry[ $ID ];
+
+                    } else if (!empty( $entry[ $ID ]  ) and $type === 'checkbox') {
+
+                        // ? checkbox needs some more conversion
+
+                        $subscriber[ $ID ] = $this->convert_checkbox( $entry [ $ID ] );
+
+                    }
+
+
+                }
+
+            }
+
+
+            $list_ids = array(
+                $entry['list']
+            );
+
+            var_dump($subscriber);
 
             $this->api->addSubscriber(
                 $subscriber,
                 $list_ids
-
             ); # finally adding the subscriber to the list
 
-        } catch (\Exception $e) {
+        } catch ( \Exception $e ) {
+            print $e->getMessage();
+        }
 
-            echo '<pre>';
-            print_r($e->getMessage());
-            echo '</pre>';
 
-            return;
+    }
+
+    private function array_keys_exists(array $keys, array $arr) {
+        return !array_diff_key(array_flip($keys), $arr);
+    }
+
+    private function get_corresponding_restriction( $type ) {
+         //? type can contain -> text, date, textarea, radio, checkbox, select
+
+        // restricting the custom field type to match our fields 
+
+        switch ( $type ) {
+
+            # user can only take certain field blocks according to custom fields type
+
+            case 'date':
+                return 'cwp/datepicker'; 
+            case 'textarea':
+                return 'cwp/message';
+            case 'radio':
+                return 'cwp/radio';
+            case 'checkbox':
+                return 'cwp/checkbox';
+            case 'select':
+                return 'cwp/select';
+            default:
+                return '';
 
         }
+
+    }
+
+    public function get_fields() {
+
+        $fields = array();
+
+        try {
+
+            # getting the subscriber fields data
+            $subscriber_fields = $this->api->getSubscriberFields(); 
+
+            # looping all fields
+            foreach ( $subscriber_fields as $key => $subscriber_field ) {
+
+                # some validations.. 
+                if ($this->array_keys_exists(['name', 'type', 'params'], $subscriber_field)) {
+
+                    //? type can contain -> text, date, textarea, radio, checkbox, select
+                    $field_name = $subscriber_field['name'];
+                    $field_params = $subscriber_field['params'];
+                    $field_type = $subscriber_field['type'];
+                    $field_id = $subscriber_field['id'];
+
+                    $field_required = array_key_exists('required', $field_params) ? $field_params['required'] : '0';
+
+                    $field_requirement_parsed = $field_required === '1' ? true : false;
+
+                    if ($field_id === 'email') {
+                        
+                        $fields[$field_id] = array(
+                            'label' => $field_name,
+                            'restriction' => 'cwp/email', // adding mail restriction
+                            'required'  => $field_requirement_parsed,
+                        );
+
+                    } else {
+                        $fields[$field_id] = array(
+                            'label' => $field_name,
+                            'restriction' => $this->get_corresponding_restriction( $field_type ), //adding mail restriction
+                            'required'  => $field_requirement_parsed,
+                        );
+                    }
+
+                }
+
+            }
+
+
+
+            return $fields;
+
+        } catch (\Exception $e) {}
+
+        
 
     }
 
