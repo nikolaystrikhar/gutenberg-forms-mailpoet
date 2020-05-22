@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Mailpoet for Gutenberg Forms
  * Plugin URI: https://www.gutenbergforms.com
- * Description: MailPoet Addon for Gutenberg Forms lets you connect MailPoet with your form. You can send leads to any of your lists in Mailchimp when a user submits the form.
+ * Description: This add-on connects Gutenberg Forms with MailPoet. This allows you to send leads/subscribers to your MailPoet list with the form submissions.
  * Author: munirkamal
  * Author URI: https://cakewp.com/
  * Version: 1.0.0
@@ -15,3 +15,21 @@
 require_once plugin_dir_path( __FILE__ ) . 'addon.php';
 require_once plugin_dir_path( __FILE__ ) . 'api/api.php';
 require_once plugin_dir_path( __FILE__ ) . 'message.php';
+
+
+
+// redirecting to the form settings dashboard when the addon activates
+
+register_activation_hook(__FILE__, function() {
+    add_option('gutenberg-forms-mailpoet-addon-activated', true);
+});
+
+add_action('admin_init', function() {
+    if (get_option('gutenberg-forms-mailpoet-addon-activated', false)) {
+        delete_option('gutenberg-forms-mailpoet-addon-activated');
+         exit( wp_redirect("admin.php?page=gutenberg_forms#/integrations") );
+    }
+});
+
+
+

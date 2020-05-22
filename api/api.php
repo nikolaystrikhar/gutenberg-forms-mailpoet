@@ -1,7 +1,5 @@
 <?php 
 
-# array(4) { ["list"]=> string(1) "4" ["EMAIL"]=> string(15) "sunny@email.com" ["FNAME"]=> string(5) "Hello" ["LNAME"]=> string(4) "Khan" }
-
 $guide = plugin_dir_path( __FILE__ ) . 'guide/guide.html';
 
 class MailPoet {
@@ -17,11 +15,12 @@ class MailPoet {
     }
 
 
-    public function get_lists() {
+    public function get_lists() : array {
 
         try {
 
             # getting the list
+
 
             $lists = $this->api->getLists();
 
@@ -91,18 +90,6 @@ class MailPoet {
 
     }
 
-    public function convert_checkbox( string $value ) {
-
-
-        $values = array(
-            'is_checked' => '1',
-            'value' => $value
-        );
-
-        return $values;
-
-    }
- 
     public function add_subscriber( $entry ) {
 
 
@@ -116,7 +103,7 @@ class MailPoet {
 
             foreach ($subscriber_fields as $key => $subscriber_field) {
                 
-                if ( $this->array_keys_exists(['name', 'type', 'params', 'id'] , $subscriber_field) ) {
+                if ( $this->array_keys_exists(['name', 'type', 'params', 'id', 'values'] , $subscriber_field) ) {
 
                     $ID = $subscriber_field['id'];
                     $type = $subscriber_field['type'];
@@ -125,11 +112,11 @@ class MailPoet {
 
                         $subscriber[ $ID ] = $entry[ $ID ];
 
-                    } else if (!empty( $entry[ $ID ]  ) and $type === 'checkbox') {
+                    } else if (!empty( $entry[ $ID ] ) and $type === 'checkbox') {
 
-                        // ? checkbox needs some more conversion
+                        $value = $subscriber_field['params']['values'][0]['value'];
 
-                        $subscriber[ $ID ] = $this->convert_checkbox( $entry [ $ID ] );
+                        $subscriber[ $ID ] = true;
 
                     }
 
@@ -138,21 +125,16 @@ class MailPoet {
 
             }
 
-
             $list_ids = array(
                 $entry['list']
             );
-
-            var_dump($subscriber);
 
             $this->api->addSubscriber(
                 $subscriber,
                 $list_ids
             ); # finally adding the subscriber to the list
 
-        } catch ( \Exception $e ) {
-            print $e->getMessage();
-        }
+        } catch ( \Exception $e ) {}
 
 
     }
@@ -232,13 +214,9 @@ class MailPoet {
 
             }
 
-
-
             return $fields;
 
         } catch (\Exception $e) {}
-
-        
 
     }
 

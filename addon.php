@@ -7,6 +7,8 @@ add_filter('gutenberg_forms_integrations', function( $integrations ) {
 
     $api_exists = class_exists(\MailPoet\API\API::class);
 
+    $guide = plugin_dir_path( __FILE__ ) . 'guide/guide.html';
+
     if (!$api_exists) return $integrations;
 
     $api = new MailPoet(\MailPoet\API\API::MP('v1'));
@@ -15,12 +17,12 @@ add_filter('gutenberg_forms_integrations', function( $integrations ) {
     $fields = $api->get_fields();
 
     $configurations = array(
-        'title' => 'MailPoet',
+        'title' => 'MailPoet v3',
         'is_pro'  => false,
         'type'  => 'autoResponder',
-        'guide' => '',
-        'description' => 'Mailpoet Addon for Gutenberg Forms lets you connect Mailpoet with your form. You can send leads to any of your lists in Mailchimp when a user submits the form.',
-        'banner'    => 'https://ps.w.org/wysija-newsletters/assets/banner-772x250.jpg?rev=1703780',
+        'guide' => file_get_contents( $guide ),
+        'description' => 'MailPoet Addon allows you to send leads/subscribers to your MailPoet subscribers list with the form submission.',
+        'banner'    => 'https://p111.p2.n0.cdn.getcloudapp.com/items/kpuL2R0w/mailpoet-banner.png',
         'fields' => array(),
         'query_fields' => array(
             'list' => array(
