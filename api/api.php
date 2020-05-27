@@ -6,7 +6,6 @@ class MailPoet {
 
     const slug = 'mailpoet';
     
-
     // initializing...
     function __construct( $api ) {
 
