@@ -101,8 +101,9 @@ class MailPoet {
             $subscriber = array();
 
             foreach ($subscriber_fields as $key => $subscriber_field) {
-                
-                if ( $this->array_keys_exists(['name', 'type', 'params', 'id', 'values'] , $subscriber_field) ) {
+
+
+                if ( $this->array_keys_exists(['name', 'type', 'params', 'id'] , $subscriber_field) ) {
 
                     $ID = $subscriber_field['id'];
                     $type = $subscriber_field['type'];
@@ -127,6 +128,8 @@ class MailPoet {
             $list_ids = array(
                 $entry['list']
             );
+
+           
 
             $this->api->addSubscriber(
                 $subscriber,
