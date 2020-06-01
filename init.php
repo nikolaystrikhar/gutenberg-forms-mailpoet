@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: MailPoet Gutenberg Forms
+ * Plugin Name: Guten Forms MailPoet
  * Plugin URI: https://www.gutenbergforms.com
  * Description: This add-on connects Gutenberg Forms with MailPoet. This allows you to send leads/subscribers to your MailPoet list with the form submissions.
  * Author: munirkamal
