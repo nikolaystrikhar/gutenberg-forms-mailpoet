@@ -1,6 +1,10 @@
 # MailPoet Add-on for Gutenberg Forms
 
+[![WordPress plugin](https://img.shields.io/wordpress/plugin/dt/guten-forms-mailpoet.svg?style=flat)](https://wordpress.org/plugins/guten-forms-mailpoet/) [![WordPress plugin](https://img.shields.io/wordpress/plugin/v/guten-forms-mailpoet.svg?style=flat)](https://wordpress.org/plugins/guten-forms-mailpoet/) [![WordPress](https://img.shields.io/wordpress/v/guten-forms-mailpoet.svg?style=flat)]() [![License](https://img.shields.io/badge/license-GPL--2.0%2B-red.svg)](https://github.com/munirkamal/guten-forms-mailpoet/blob/master/LICENSE)
+
 MailPoet add-on for [Gutenberg Forms](https://wordpress.org/plugins/forms-gutenberg/). Connect with MailPoet and send leads/subscribers to your MailPoet list with the form submissions.
+
+[![MailPoet Add-on for Gutenberg Forms](https://ps.w.org/guten-forms-mailpoet/assets/banner-1544x500.png)](https://wordpress.org/plugins/guten-forms-mailpoet/)
 
 
 ## Description

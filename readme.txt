@@ -1,4 +1,4 @@
-=== Guten Forms MailPoet ===
+=== Gutenberg Forms Add-on for MailPoet ===
 Contributors: munirkamal
 Tags: mailpoet, wordpress form,  gutenberg form, contact form, gutenberg block, contact form plugin, forms, form builder, custom form, contact button, contact me, custom contact form, form manager, form, forms builder, forms creator, captcha, recaptcha, Akismet, email form, web form, feedback form, email submit form, message form, contact form block, wordpress form plugin
 Requires at least: 4.8
