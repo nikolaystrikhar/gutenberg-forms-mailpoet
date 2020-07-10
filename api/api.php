@@ -72,6 +72,7 @@ class MailPoet {
 
                 $ID = $subscriber_field['id'];
 
+
                 if ( $ID !== 'checkbox' and $field_requirement_parsed === true and array_key_exists($ID, $entry) and empty($entry[$ID])) {
 
                     // this means a required field is not filled
@@ -79,7 +80,6 @@ class MailPoet {
                     break;
 
                 } 
-
 
             }
 
@@ -90,14 +90,15 @@ class MailPoet {
     }
 
     public function add_subscriber( $entry ) {
-
+        
 
         try {
             $subscriber_fields =  $this->api->getSubscriberFields();
             $is_valid = $this->validate_entry( $entry, $subscriber_fields );
-
+            
+            
             if (!$is_valid) return; # stop executing the function if the entry is not valid
-
+            
             $subscriber = array();
 
             foreach ($subscriber_fields as $key => $subscriber_field) {
@@ -125,16 +126,30 @@ class MailPoet {
 
             }
 
+            
+
             $list_ids = array(
                 $entry['list']
             );
 
-           
+            if (array_key_exists('confirmation_checkbox', $entry) and !empty($entry['confirmation_checkbox']) and $entry['confirmation_checkbox'] !== "Select Field") {
+                // this means that there is a confirmation checkbox available and it is checked
 
-            $this->api->addSubscriber(
-                $subscriber,
-                $list_ids
-            ); # finally adding the subscriber to the list
+                $this->api->addSubscriber(
+                    $subscriber,
+                    $list_ids
+                ); # finally adding the subscriber to the list
+
+            } else if (array_key_exists('confirmation_checkbox', $entry) and $entry['confirmation_checkbox'] === "Select Field") {
+                
+                $this->api->addSubscriber(
+                    $subscriber,
+                    $list_ids
+                ); # finally adding the subscriber to the list
+                
+            }
+
+
 
         } catch ( \Exception $e ) {}
 
@@ -216,10 +231,16 @@ class MailPoet {
 
             }
 
+            // checkbox for confirmation            
+            $fields['confirmation_checkbox'] = array(
+                'label'       => 'Confirmation Checkbox', // title
+                'restriction' => 'cwp/checkbox', // restricting it to only insert checkbox
+                'default'     => null, // setting a default return value if no field is selected
+                'required'    => false // not required
+            );
+
             return $fields;
 
-        } catch (\Exception $e) {}
-
+        } catch (\Exception $e) {} // ignoring exceptions...
     }
-
 }

@@ -51,5 +51,4 @@ add_action('gutenberg_forms_submission__mailpoet', function($entry) {
 
     }
 
-
 });
