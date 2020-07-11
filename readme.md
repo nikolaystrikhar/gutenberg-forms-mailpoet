@@ -42,6 +42,9 @@ We appreciate all contributions and don't want a wall of rules to get in the way
 
 ## Changelog
 
+= 2.0.0 (11 July 2020) =
+- Added: Option to enable user Opt-in by clicking on a checkbox.
+
 = 1.0.0 (29 May 2019) =
 
 - Initial release.

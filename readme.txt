@@ -3,7 +3,7 @@ Contributors: munirkamal
 Tags: mailpoet, wordpress form,  gutenberg form, contact form, gutenberg block, contact form plugin, forms, form builder, custom form, contact button, contact me, custom contact form, form manager, form, forms builder, forms creator, captcha, recaptcha, Akismet, email form, web form, feedback form, email submit form, message form, contact form block, wordpress form plugin
 Requires at least: 4.8
 Tested up to: 5.4
-Stable tag: 1.0.0
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ This is an add-on plugin and requires <a href="https://gutenbergforms.com/" rel=
 
 = How it Works =
 
-MailPoet add-on once enabled allow you to add an addditional form action "MailPoet". Once you add that action, you will get a settings pannel for MailPost that let's you select your MailPoet list and map your form fields with the MailPoet fields.
+MailPoet add-on once enabled allow you to add an addditional form action "MailPoet". Once you add that action, you will get a settings pannel for MailPoet that let's you select your MailPoet list and map your form fields with the MailPoet fields.
 
 
 = Get involved with the Development =
@@ -61,6 +61,9 @@ You may also get involved with the development via Github:
 6. Form Styles
 
 == Changelog ==
+
+= 2.0.0 (11 July 2020) =
+* Added: Option to enable user Opt-in by clicking on a checkbox.
 
 = 1.0.0 (29 May 2020) =
 * Initial release.
