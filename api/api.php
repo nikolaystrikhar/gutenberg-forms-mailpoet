@@ -132,6 +132,7 @@ class MailPoet {
                 $entry['list']
             );
 
+            
             if (array_key_exists('confirmation_checkbox', $entry) and !empty($entry['confirmation_checkbox']) and $entry['confirmation_checkbox'] !== "Select Field") {
                 // this means that there is a confirmation checkbox available and it is checked
 
@@ -147,6 +148,13 @@ class MailPoet {
                     $list_ids
                 ); # finally adding the subscriber to the list
                 
+            } else if (!array_key_exists('confirmation_checkbox', $entry)) {
+
+                $this->api->addSubscriber(
+                    $subscriber,
+                    $list_ids
+                ); # finally adding the subscriber to the list
+            
             }
 
 

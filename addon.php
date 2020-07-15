@@ -9,12 +9,15 @@ add_filter('gutenberg_forms_integrations', function( $integrations ) {
 
     $guide = plugin_dir_path( __FILE__ ) . 'guide/guide.html';
 
-    if (!$api_exists) return $integrations;
+    $api = null;
+    $lists = [];
+    $fields = [];
 
-    $api = new MailPoet(\MailPoet\API\API::MP('v1'));
-        
-    $lists = $api->get_lists();
-    $fields = $api->get_fields();
+    if ($api_exists) {
+        $api = new MailPoet(\MailPoet\API\API::MP('v1'));
+        $lists = $api->get_lists();
+        $fields = $api->get_fields();
+    }
 
     $configurations = array(
         'title' => 'MailPoet v3',
@@ -34,6 +37,24 @@ add_filter('gutenberg_forms_integrations', function( $integrations ) {
         ),
         'api_fields' => $fields
     ); 
+
+
+    if (!$api_exists) {
+        # if the user does not have mailpoet plugin 
+        # disabling the integration by adding some options
+        # & showing a notice prompting to install MailPoet v3 addon
+
+        $plugin_repo_url = "https://wordpress.org/plugins/mailpoet/";
+
+        $configurations['is_disabled'] = true; // disabling the integration
+        $configurations['error'] = array(
+            'status'    => 'error',
+            'message'   => sprintf('Unable to access MailPoet API please make sure that <a href="%1$s" target="__blank">MailPoet Plugin</a> is installed & active before activating MailPoet Addon', $plugin_repo_url)
+        );
+
+        
+    }
+
 
     $integrations['mailpoet'] = $configurations;
 
